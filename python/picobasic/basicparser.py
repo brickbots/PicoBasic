@@ -20,7 +20,11 @@ from .flowsignal import FlowSignal
 import math
 import random
 from time import monotonic
-from keyboard import Keyboard
+import config
+if config.HW == 'picomputer':
+    from picomputer_keyboard import Keyboard
+else:
+    from feather_keyboard import Keyboard
 from screen import Term
 from buzzer import Buzzer
 

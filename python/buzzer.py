@@ -1,6 +1,7 @@
 import board
 import time
 import pwmio
+import config
 
 def singleton(cls):
     return cls()
@@ -8,7 +9,10 @@ def singleton(cls):
 @singleton
 class Buzzer:
     def __init__(self):
-        self.piezo = pwmio.PWMOut(board.GP0, variable_frequency=True)
+        if config.HW == "picomputer":
+            self.piezo = pwmio.PWMOut(board.GP0, variable_frequency=True)
+        else:
+            self.piezo = pwmio.PWMOut(board.D13, variable_frequency=True)
         self.volume = 0.5
         self.duty_cycle = int(65535 * self.volume)
         self.piezo.frequency = 261

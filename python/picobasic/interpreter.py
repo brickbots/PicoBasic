@@ -27,10 +27,15 @@ from .basictoken import BASICToken as Token
 from .lexer import Lexer
 from .program import Program
 from sys import stderr
-from keyboard import Keyboard
+from gc import mem_free
+
+import config
+if config.HW == 'picomputer':
+    from picomputer_keyboard import Keyboard
+else:
+    from feather_keyboard import Keyboard
 from buzzer import Buzzer
 from screen import Term
-from gc import mem_free
 
 
 def main():
@@ -62,8 +67,7 @@ def main():
         Term.write("> ")
         stmt = Keyboard.get_line()
 
-        # try:
-        if True:
+        try:
             tokenlist = lexer.tokenize(stmt)
 
             # Execute commands directly, otherwise
@@ -129,9 +133,9 @@ def main():
 
         # Trap all exceptions so that interpreter
         # keeps running
-        # except Exception as e:
-        #    Term.print(str(e))
-        #    print(e, file=stderr, flush=True)
+        except Exception as e:
+           Term.print(str(e))
+           print(e, file=stderr, flush=True)
 
 
 if __name__ == "__main__":

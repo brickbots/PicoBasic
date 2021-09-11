@@ -2,31 +2,49 @@ import displayio
 import terminalio
 import busio
 import board
-from rsu_st7789 import ST7789
+import config
 
 displayio.release_displays()
-spi = busio.SPI(clock=board.GP18, MOSI=board.GP19)
+if config.HW == "feather":
+    # If using a feather, assume keybord_feather
+    from adafruit_ili9341 import ILI9341
 
+    spi = board.SPI()
+    while not spi.try_lock():
+        pass
+    spi.configure(baudrate=62500000)  # This is the theoretical max for RP2040
+    spi.unlock()
+    tft_cs = board.D9
+    tft_dc = board.D10
 
-while not spi.try_lock():
-    pass
-spi.configure(baudrate=24000000)  # Configure SPI for 24MHz
-spi.unlock()
-tft_cs = board.GP17
-tft_dc = board.GP16
+    display_bus = displayio.FourWire(spi, command=tft_dc, chip_select=tft_cs)
+    display = ILI9341(display_bus, width=320, height=240)
 
-display_bus = displayio.FourWire(
-    spi, command=tft_dc, chip_select=tft_cs, reset=board.GP21
-)
+else:
+    # Assume PICOmputer
+    from rsu_st7789 import ST7789
 
-display = ST7789(
-    display_bus,
-    width=240,
-    height=240,
-    rowstart=00,
-    colstart=80,
-    backlight_pin=board.GP20,
-)
+    spi = busio.SPI(clock=board.GP18, MOSI=board.GP19)
+
+    while not spi.try_lock():
+        pass
+    spi.configure(baudrate=62500000)  # This is the theoretical max for RP2040
+    spi.unlock()
+    tft_cs = board.GP17
+    tft_dc = board.GP16
+
+    display_bus = displayio.FourWire(
+        spi, command=tft_dc, chip_select=tft_cs, reset=board.GP21
+    )
+
+    display = ST7789(
+        display_bus,
+        width=240,
+        height=240,
+        rowstart=00,
+        colstart=80,
+        backlight_pin=board.GP20,
+    )
 
 
 def singleton(cls):
@@ -36,25 +54,28 @@ def singleton(cls):
 @singleton
 class Term:
     display = display
-    #top_group = displayio.Group(max_size=3, scale=1)
+    # top_group = displayio.Group(max_size=3, scale=1)
     top_group = displayio.Group(scale=1)
 
     # Create a bitmap with one colors
-    #bg_bitmap = displayio.Bitmap(display.width, display.height, 1)
+    bg_bitmap = displayio.Bitmap(display.width, display.height, 1)
 
     # Create a two color palette
-    #bg_palette = displayio.Palette(1)
-    #bg_palette[0] = 0x9999FF
+    bg_palette = displayio.Palette(1)
+    bg_palette[0] = 0x9999FF
 
     # Create a TileGrid using the Bitmap and Palette
-    #bg_tile_grid = displayio.TileGrid(bg_bitmap, pixel_shader=bg_palette)
+    bg_tile_grid = displayio.TileGrid(bg_bitmap, pixel_shader=bg_palette)
 
     # Add the TileGrid to the Group
-    #top_group.append(bg_tile_grid)
+    top_group.append(bg_tile_grid)
     display.show(top_group)
 
-    lines = 16
-    cols = 40
+    bb = terminalio.FONT.get_bounding_box()
+    font_height = bb[1]
+    font_width = bb[0]
+    lines = int(display.height / font_height) - 1
+    cols = int(display.width / font_width) - 1
 
     def __init__(self):
         self.pal = displayio.Palette(2)
@@ -69,10 +90,10 @@ class Term:
             pixel_shader=self.pal,
             width=self.cols,
             height=self.lines,
-            tile_width=6,
-            tile_height=15,
-            x=0,
-            y=0,
+            tile_width=self.font_width,
+            tile_height=self.font_height,
+            x=int((self.display.width - (self.cols * self.font_width))/2),
+            y=int((self.display.height - (self.lines * self.font_height))/2),
         )
         self.terminal = terminalio.Terminal(self.tg, terminalio.FONT)
 
@@ -121,4 +142,3 @@ class Term:
         if y < 0:
             y = 0
         self.escape("[" + str(y) + ";" + str(x) + "H")
-

@@ -26,7 +26,11 @@ from .basictoken import BASICToken as Token
 from .basicparser import BASICParser
 from .flowsignal import FlowSignal
 from .lexer import Lexer
-from keyboard import Keyboard
+import config
+if config.HW == 'picomputer':
+    from picomputer_keyboard import Keyboard
+else:
+    from feather_keyboard import Keyboard
 from screen import Term
 
 
