@@ -106,7 +106,7 @@ class Keyboard:
                 return k
 
     def __non_special(self, key):
-        if ord(key) > 32 and ord(key) < 126:
+        if ord(key) >= 32 and ord(key) <= 126:
             return True
         else:
             return False

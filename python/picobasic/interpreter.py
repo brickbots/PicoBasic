@@ -135,7 +135,7 @@ def main():
         # keeps running
         except Exception as e:
            Term.print(str(e))
-           print(e, file=stderr, flush=True)
+           print(e)
 
 
 if __name__ == "__main__":
