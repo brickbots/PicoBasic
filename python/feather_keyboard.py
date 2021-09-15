@@ -1,5 +1,6 @@
 import digitalio
 import board
+import time
 
 from bbq10keyboard import BBQ10Keyboard, STATE_PRESS, STATE_RELEASE, STATE_LONG_PRESS
 from screen import Term
@@ -12,7 +13,8 @@ def singleton(cls):
 
 @singleton
 class Keyboard:
-    KEY_SHIFT = 2
+    KEY_SHIFT_RIGHT = "\x1c"
+    KEY_SHIFT_LEFT = "\x1b"
     KEY_UP = "\x01"
     KEY_LEFT = "\x03"
     KEY_DOWN = "\x02"
@@ -20,6 +22,43 @@ class Keyboard:
     KEY_RETURN = "\n"
     KEY_DELETE = "\x08"
     KEY_ESC = "\x06"
+    KEY_ALT = "\x1a"
+    KEY_SYM = "\x1d"
+
+    shift_map = {
+        "Q": "#",
+        "W": "1",
+        "E": "2",
+        "R": "3",
+        "T": "(",
+        "Y": ")",
+        "U": "_",
+        "I": "-",
+        "O": "+",
+        "P": "#",
+        "A": "#",
+        "S": "#",
+        "D": "#",
+        "F": "#",
+        "G": "#",
+        "H": "#",
+        "J": "#",
+        "K": "#",
+        "L": "#",
+        "Z": "#",
+        "X": "#",
+        "C": "#",
+        "V": "#",
+        "B": "#",
+        "N": "#",
+        "M": "#",
+        "~": "0",
+    }
+
+    remap = {
+        "~": "0",
+        KEY_ALT: "=",
+    }
 
     def __init__(self):
         i2c = board.I2C()
@@ -27,6 +66,14 @@ class Keyboard:
             pass
         i2c.unlock()
         self.kbd = BBQ10Keyboard(i2c)
+
+        # need to wait!
+        time.sleep(0.05)
+
+        # Turn on reporting of modifiers
+        self.kbd._update_register_bit(0x02, 6, True)
+        # Turn off modifying keys before reporting
+        self.kbd._update_register_bit(0x02, 7, False)
 
         self.line_history = []
 
@@ -40,6 +87,7 @@ class Keyboard:
     def get_key(self):
         k = self.kbd.key
         if k:
+            print(repr(k[1]))
             if k[0] == STATE_RELEASE:
                 if k[1].isalpha():
                     return k[1].upper()
