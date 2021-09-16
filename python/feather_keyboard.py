@@ -35,23 +35,23 @@ class Keyboard:
         "U": "_",
         "I": "-",
         "O": "+",
-        "P": "#",
-        "A": "#",
-        "S": "#",
-        "D": "#",
-        "F": "#",
-        "G": "#",
-        "H": "#",
-        "J": "#",
-        "K": "#",
-        "L": "#",
-        "Z": "#",
-        "X": "#",
-        "C": "#",
-        "V": "#",
-        "B": "#",
-        "N": "#",
-        "M": "#",
+        "P": "@",
+        "A": "*",
+        "S": "4",
+        "D": "5",
+        "F": "6",
+        "G": "/",
+        "H": ":",
+        "J": ";",
+        "K": "'",
+        "L": "\"",
+        "Z": "7",
+        "X": "8",
+        "C": "9",
+        "V": "?",
+        "B": "!",
+        "N": ",",
+        "M": ".",
         "~": "0",
     }
 
@@ -76,6 +76,7 @@ class Keyboard:
         self.kbd._update_register_bit(0x02, 7, False)
 
         self.line_history = []
+        self.__shifted = False
 
     def is_esc(self):
         k = self.kbd.keys
@@ -87,12 +88,17 @@ class Keyboard:
     def get_key(self):
         k = self.kbd.key
         if k:
-            print(repr(k[1]))
-            if k[0] == STATE_RELEASE:
-                if k[1].isalpha():
-                    return k[1].upper()
+            if k[1] == self.KEY_SHIFT_RIGHT or k[1] == self.KEY_SHIFT_LEFT:
+                if k[0] == STATE_RELEASE:
+                    self.__shifted = False
                 else:
-                    return k[1]
+                    self.__shifted = True
+
+            elif k[0] == STATE_RELEASE:
+                key = self.remap.get(k[1], k[1])
+                if self.__shifted:
+                    key = self.shift_map.get(key,key)
+                return key
         else:
             return None
 
