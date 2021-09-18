@@ -1,4 +1,6 @@
-from picobasic import interpreter
+from sys import implementation
+from pybasic.interpreter import Interpreter
+from picoterm import PicoTerm
 
-interpreter.main()
+Interpreter(PicoTerm()).main()
 
