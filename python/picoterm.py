@@ -29,8 +29,10 @@ class PicoTerm:
         self.enter = Term.enter
         self.home = Term.home
         self.cursor = Term.cursor
+        self.clear = Term.clear
         self.input = Keyboard.get_line
         self.get_char = Keyboard.get_char
+        self.is_esc = Keyboard.is_esc
 
     def poll_char(self):
         """

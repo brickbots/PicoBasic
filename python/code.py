@@ -1,4 +1,4 @@
-from pybasic.interpreter import Interpreter
+from basic2040.interpreter import Interpreter
 from picoterm import PicoTerm
 from gc import mem_free
 
