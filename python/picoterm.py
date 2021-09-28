@@ -15,6 +15,8 @@
 
 
 import config
+from buzzer import Buzzer
+
 if config.HW == 'picomputer':
     from picomputer_keyboard import Keyboard
 else:
@@ -33,6 +35,7 @@ class PicoTerm:
         self.input = Keyboard.get_line
         self.get_char = Keyboard.get_char
         self.is_esc = Keyboard.is_esc
+        self.buzzer = Buzzer
 
     def poll_char(self):
         """

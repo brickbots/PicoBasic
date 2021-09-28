@@ -104,7 +104,7 @@ class Term:
             self.__blank_line += " "
 
     def write(self, string):
-        self.terminal.write(bytes(string, "ascii"))
+        self.terminal.write(bytes(str(string), "ascii"))
 
     def escape(self, code):
         self.write(chr(27) + "" + code)
