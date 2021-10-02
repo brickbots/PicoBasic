@@ -1,9 +1,9 @@
 10 rem Cursor Demo
 20 print "Watch a ball bounce around a room!"
 30 input "Enter the delay between frames"; delay
-40 xsize = 35 : ysize = 15
+40 xsize = 30 : ysize = 15
 50 clear
-60 print "=" * xsize;
+60 print "=" * xsize
 70 for i = 2 to ysize - 1
 80 cursor 1,i:print "|";:cursor xsize,i:print "|";
 90 next i

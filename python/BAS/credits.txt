@@ -1,0 +1,14 @@
+Most examples here were taken from the original PyBasic repo at:
+https://github.com/richpl/PyBasic
+
+Some files have been renamed to make them loadable without quotes.  
+
+Adventure and StarTrek were ported through the diligent efforts of 
+https://github.com/RetiredWizard
+
+Eliza, factorial, rock_scissors_paper come courtesy of PyBasic's 
+originator:
+https://github.com/richpl
+
+Other examples taken from examples at the wonderful
+http://www.vintage-basic.net

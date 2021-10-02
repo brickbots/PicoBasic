@@ -32,6 +32,8 @@ class PicoTerm:
         self.home = Term.home
         self.cursor = Term.cursor
         self.clear = Term.clear
+        self.lines = Term.lines
+        self.cols = Term.cols
         self.input = Keyboard.get_line
         self.get_char = Keyboard.get_char
         self.is_esc = Keyboard.is_esc

@@ -31,6 +31,8 @@ from buzzer import Buzzer
 
 class PicoEmulationTerm:
     buzzer = Buzzer
+    lines = 16
+    cols = 52
 
     def __init__(self, stdscr):
 
@@ -168,9 +170,9 @@ class PicoEmulationTerm:
             elif key < 32 or key > 126:
                 pass
             else:
-
-                retstr = retstr + chr(key)
-                self.__stdscr.echochar(chr(key))
+                inchar = chr(key).upper()
+                retstr = retstr + inchar
+                self.__stdscr.echochar(inchar)
             key = self.__stdscr.getch()
 
         curses.curs_set(0)
