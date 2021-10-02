@@ -17,6 +17,9 @@ echo "  IO"
 /Volumes/CP_Build/circuitpython/mpy-cross/mpy-cross python/picoterm.py
 /Volumes/CP_Build/circuitpython/mpy-cross/mpy-cross python/picointerp.py
 
+echo "Copying Examples"
+cp python/BAS/* /Volumes/CIRCUITPY/BAS
+
 echo "Copying back to PicoBasic"
 cp python/*.mpy /Volumes/CIRCUITPY
 cp python/basic2040/*.mpy /Volumes/CIRCUITPY/basic2040

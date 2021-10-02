@@ -10,8 +10,8 @@
 19 rem IN MARCH 1998 AND THEN TO PYBASIC FOR THE RASPBERRY RP2040 IN JUNE 2021
 20 rem PRINT "Adventure 3.2 on ";date$;" at ";time$
 21 PRINT "Adventure 3.2"
-22 open "AMESSAGE" for INPUT as #3:open "AMOVING" for INPUT as #4
-23 open "ADESCRIP" for INPUT as #1:open "AITEMS" for INPUT as #2
+22 open "BAS/AMESSAGE" for INPUT as #3:open "BAS/AMOVING" for INPUT as #4
+23 open "BAS/ADESCRIP" for INPUT as #1:open "BAS/AITEMS" for INPUT as #2
 44 rem dirs is an array of possible room directions, it replaces file AMOVING
 45 dim dirs(100,10)
 46 dim indx(303)
@@ -1068,10 +1068,10 @@
 10006 data "road"
 10007 data "everything"
 12500 rem INITIALIZE MESSAGE INDEX
-12501 open "AMESSAGE.IDX" for INPUT as #6 else 12505
+12501 open "BAS/AMESSAGE.IDX" for INPUT as #6 else 12505
 12502 goto 12610
 12504 rem Message indx file doesn't exist, create it
-12505 OPEN "AMESSAGE.IDX" FOR OUTPUT AS #6
+12505 OPEN "BAS/AMESSAGE.IDX" FOR OUTPUT AS #6
 12506 fpos = -2:b$ = "":fracnt= 0:lastfra=-1:fseek #3,0
 12520 fpos = fpos+len(b$)+2
 12522 INPUT #3,b$
@@ -1096,7 +1096,7 @@
 12594 NEXT I
 12595 PRINT #6,-999
 12596 close #3
-12597 open "AMESSAGE" for INPUT as #3
+12597 open "BAS/AMESSAGE" for INPUT as #3
 12600 GOTO 12670
 12604 REM READ AMESSAGE.IDX FILE INTO ARRAYS
 12610 INPUT #6,II,I
