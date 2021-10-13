@@ -36,6 +36,16 @@ class PicoEmulationTerm:
 
     def __init__(self, stdscr):
 
+        # Keyboard constants
+        self.KEY_SHIFT = -1
+        self.KEY_UP = curses.KEY_UP
+        self.KEY_LEFT = curses.KEY_LEFT
+        self.KEY_DOWN = curses.KEY_DOWN
+        self.KEY_RIGHT = curses.KEY_RIGHT
+        self.KEY_RETURN = curses.KEY_ENTER
+        self.KEY_DELETE = curses.KEY_DC
+        self.KEY_ESC = curses.KEY_EXIT
+
         # Turn off echo
         curses.noecho()
 
@@ -54,18 +64,6 @@ class PicoEmulationTerm:
         # Setup outer window with room for border
         overscan_scr = stdscr.derwin(18, 54, 0, 0)
         overscan_scr.bkgd(curses.color_pair(1))
-
-        # Draw border
-        #overscan_scr.border(
-        #    curses.ACS_CKBOARD,
-        #    curses.ACS_CKBOARD,
-        #    curses.ACS_CKBOARD,
-        #    curses.ACS_CKBOARD,
-        #    curses.ACS_CKBOARD,
-        #    curses.ACS_CKBOARD,
-        #    curses.ACS_CKBOARD,
-        #    curses.ACS_CKBOARD,
-        #)
         overscan_scr.refresh()
 
         # Now setup actual window to pass through
@@ -224,6 +222,9 @@ class PicoEmulationTerm:
             return True
         else:
             return False
+
+    def beep(self):
+        curses.beep()
 
 
 def main(stdscr):

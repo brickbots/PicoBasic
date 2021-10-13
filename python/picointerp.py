@@ -42,16 +42,18 @@ class PicoInterpreter(Interpreter):
             return
 
         line_index = 0
+        page_top_index = 0
         if start_line:
             # Make sure first displayed page starts at the start_line
             for line_number in line_numbers:
                 if int(line_number) >= start_line:
                     break
+                    page_top = start_line
                 else:
                     line_index += 1
 
             if line_index > len(line_numbers):
-                # Hmmm.. never found the start line
+                # Hmmm.. never found the start line, start on the last page
                 line_index = line_index - int(self._terminal.lines * 0.75)
                 if line_index < 0:
                     line_index = 0
@@ -71,9 +73,7 @@ class PicoInterpreter(Interpreter):
                 indent = len(line_split[0]) + 1
                 for token in line_split:
                     if col_count + len(token) >= self._terminal.cols:
-                        out_line += (
-                            " ".join(this_line) + "\n" + " " * indent
-                        )
+                        out_line += " ".join(this_line) + "\n" + " " * indent
                         page_lines += 1
                         this_line = [token]
                         col_count = indent
@@ -91,13 +91,43 @@ class PicoInterpreter(Interpreter):
                 self._terminal.write(out_line)
             else:
                 self._terminal.cursor(1, self._terminal.lines)
-                self._terminal.write("PAGE")
-                self._terminal.get_char()
-                page_lines = 0
-                # Since we failed to print the last line we tried
-                # Back the index out one
-                line_index -= 1
+                self._terminal.write("Up/Dn - Lines / U/D - Pages / (S)top")
+                opt_ = self._terminal.get_char()
+                if opt_ == ord("S") or opt_ == ord("s"):
+                    keep_listing = False
+                elif opt_ == ord("U") or opt_ == ord("u"):
+                    if page_top_index == 0:
+                        self._terminal.beep()
+                    else:
+                        line_index = page_top_index - int(self._terminal.lines / 2) - 1
+                        if line_index < 0:
+                            line_index = 0
+                        page_top_index = line_index
+                        page_lines = 0
+                elif opt_ == self._terminal.KEY_UP:
+                    if page_top_index == 0:
+                        self._terminal.beep()
+                    else:
+                        line_index = page_top_index - 1
+                        page_top_index = line_index
+                        page_lines = 0
+                elif opt_ == self._terminal.KEY_DOWN:
+                    line_index = page_top_index + 1
+                    page_top_index = line_index
+                    page_lines = 0
+                else:
+                    # Continue listing
+                    self._terminal.clear()
+                    self._terminal.home()
+
+                    page_lines = 0
+                    # Since we failed to print the last line we tried
+                    # Back the index out one
+                    line_index -= 1
+                    page_top_index = line_index
 
             line_index += 1
+
+            # Check for end of program
             if line_index > number_count - 1:
                 keep_listing = False

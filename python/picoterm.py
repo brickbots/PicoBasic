@@ -39,6 +39,16 @@ class PicoTerm:
         self.is_esc = Keyboard.is_esc
         self.buzzer = Buzzer
 
+        # Keyboard constants
+        self.KEY_SHIFT = Keyboard.KEY_SHIFT
+        self.KEY_UP = Keyboard.KEY_UP
+        self.KEY_LEFT = Keyboard.KEY_LEFT
+        self.KEY_DOWN = Keyboard.KEY_DOWN
+        self.KEY_RIGHT = Keyboard.KEY_RIGHT
+        self.KEY_RETURN = Keyboard.KEY_RETURN
+        self.KEY_DELETE = Keyboard.KEY_DELETE
+        self.KEY_ESC = Keyboard.KEY_ESC
+
     def poll_char(self):
         """
         Checks keyboard state.  Returns zero if no key is pressed
@@ -54,5 +64,6 @@ class PicoTerm:
             return 0
         else:
             return ord(k)
-
+    def beep(self):
+        self.buzzer.beep()
 
